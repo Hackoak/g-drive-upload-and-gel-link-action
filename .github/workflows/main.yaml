@@ -1,7 +1,7 @@
 name: Generate documentation
 on:
   push:
-    branches: [master]
+    branches: [master, tonest]
 jobs:
   documentation:
     name: Generate documentation
