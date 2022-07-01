@@ -71,6 +71,6 @@ with:
 
 # Play with the output drive link
 - name: Play with the output drive link
-run: echo ${{ steps.driveUpload.outputs.link }}
+  run: echo ${{ steps.driveUpload.outputs.link }}
 ```
 

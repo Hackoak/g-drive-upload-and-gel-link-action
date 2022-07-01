@@ -1,34 +1,36 @@
-const { google } = require('googleapis');
 const actions = require('@actions/core');
+const { google } = require('googleapis');
 const fs = require('fs');
 const archiver = require('archiver');
 
-// Google Service Account credentials  encoded in base64
+/** Google Service Account credentials  encoded in base64 */
 const credentials = actions.getInput('credentials', { required: true });
 
-// Google Drive Folder ID to upload the file/folder to
-const folder = actions.getInput('folder-id', { required: true });
+/** Google Drive Folder ID to upload the file/folder to */
+const folder = actions.getInput('folder', { required: true });
 
-// Local path to the file/folder to upload
-const target = actions.getInput('upload-from', { required: true });
+/** Local path to the file/folder to upload */
+const target = actions.getInput('target', { required: true });
 
-// Optional name for the zipped file
+/** Optional name for the zipped file */
 const name = actions.getInput('name', { required: false });
 
+/** Link to the Drive folder */
+const link = 'link';
 
-// Setting the core 
 const CREDENTIALS_JSON = JSON.parse(Buffer.from(credentials, 'base64').toString());
 const DRIVE_ENDPOINT = 'https://www.googleapis.com/auth/drive'
 const SCOPES = [DRIVE_ENDPOINT];
 const auth = new google.auth.JWT(CREDENTIALS_JSON.client_email, null, CREDENTIALS_JSON.private_key, SCOPES);
 const drive = google.drive({ version: 'v3', auth });
 
+const driveLink = `https://drive.google.com/drive/folders/${folder}`
 let filename = target.split('/').pop();
 
-async function runAction() {
-  // actions.setOutput(link, driveLink);
+async function main() {
+  actions.setOutput(link, driveLink);
 
-  if (fs.lstatSync(target).isDirectory()) {
+  if (fs.lstatSync(target).isDirectory()){
     filename = `${name || target}.zip`
 
     actions.info(`Folder detected in the given target - ${target}`)
@@ -42,12 +44,7 @@ async function runAction() {
       });
   }
   else
-    uploadToDrive().then((r) => {
-      actions.info(`Sending the output...${r.id}`)
-      actions.info(`viewing the output...${r}`)
-      const OUTPUT_LINK = `https://drive.google.com/open?id=${r.id}`
-      actions.setOutput(OUTPUT_LINK);
-    });
+    uploadToDrive();
 }
 
 /**
@@ -64,7 +61,7 @@ function uploadToDrive() {
       body: fs.createReadStream(`${name || target}${fs.lstatSync(target).isDirectory() ? '.zip' : ''}`)
     }
   }).then((res) => {
-    actions.info(`File uploaded successfully -> ${res}`);
+     actions.info(`File uploaded successfully -> ${res}`);
     return res
   })
     .catch(e => {
@@ -78,7 +75,7 @@ function uploadToDrive() {
  * @param {string} out Name of the resulting zipped file
  */
 function zipDirectory(source, out) {
-  const archive = archiver('zip', { zlib: { level: 9 } });
+  const archive = archiver('zip', { zlib: { level: 9 }});
   const stream = fs.createWriteStream(out);
 
   return new Promise((resolve, reject) => {
@@ -98,4 +95,4 @@ function zipDirectory(source, out) {
 
 
 
-runAction().catch(e => actions.setFailed(e));
+main().catch(e => actions.setFailed(e));
