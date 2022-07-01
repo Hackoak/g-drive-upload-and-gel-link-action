@@ -1,6 +1,6 @@
 name: 'Upload to Google Drive'
 description: 'Uploads a file or a folder to Google Drive'
-author: 'Yayo Acosta'
+author: 'Hackoak'
 inputs: 
   credentials:
     description: 'Google Service Account credentials as encoded as base64 string'
