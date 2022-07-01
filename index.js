@@ -84,13 +84,6 @@ function uploadToDrive() {
       body: fs.createReadStream(`${name || target}${fs.lstatSync(target).isDirectory() ? '.zip' : ''}`)
     }
   }).then((res) => {
-    actions.info(`File uploaded successfully`);
-    actions.info(`driveId -> ${res.data.driveId}`);
-    actions.info(`exportLinks -> ${res.data.exportLinks}`);
-    actions.info(`webContentLink -> ${res.data.webContentLink}`);
-    actions.info(`id -> ${res.data.id}`);
-    actions.info(`webViewLinkid -> ${res.data.webViewLinkid}`);
-    actions.info(`shared -> ${res.data.shared}`);
     const driveLink = `https://drive.google.com/open?id=${res.data.id}`
 
     actions.setOutput(link, driveLink);
