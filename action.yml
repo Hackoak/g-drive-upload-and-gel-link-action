@@ -1,0 +1,26 @@
+name: 'Upload to Google Drive'
+description: 'Uploads a file or a folder to Google Drive'
+author: 'Yayo Acosta'
+inputs: 
+  credentials:
+    description: 'Google Service Account credentials as encoded as base64 string'
+    required: true
+  folder-id:
+    description: 'Google Drive folder ID to upload the file/folder'
+    required: true
+  upload-from:
+    description: 'Local path to the file/folder to upload'
+    required: true
+  name:
+    description: 'Optional name for the zipped file'
+    required: false
+    default: 'test'
+outputs:
+  link:
+    description: 'A link to the Drive file'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  icon: 'upload-cloud'  
+  color: 'orange'

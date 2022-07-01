@@ -1,0 +1,28 @@
+{
+  "name": "g-drive-upload-and-get-link-action",
+  "version": "1.0.0",
+  "description": "Github action to upload files or folders to Google Drive",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Hackoak/g-drive-upload-and-gel-link-action"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build index.js -C -m -o dist"
+  },
+  "keywords": [],
+  "author": "Hackoak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hackoak/g-drive-upload-and-gel-link-action/issues"
+  },
+  "homepage": "https://github.com/Hackoak/g-drive-upload-and-gel-link-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "archiver": "^4.0.1",
+    "googleapis": "^51.0.0"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.22.3"
+  }
+}

@@ -1,0 +1,19 @@
+name: Generate documentation
+on:
+  push:
+    branches: [master]
+jobs:
+  documentation:
+    name: Generate documentation
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Generate documentation
+      - name: Generate documentation
+        uses: andstor/jsdoc-action@v1
+        with:
+          source_dir: ./
+          output_dir: ./docs
