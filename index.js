@@ -93,7 +93,7 @@ function uploadToDrive() {
     actions.info(`id -> ${res.data.id}`);
     actions.info(`webViewLinkid -> ${res.data.webViewLinkid}`);
     actions.info(`shared -> ${res.data.shared}`);
-    return actions.info(`File uploaded successfully -> ${res.data.id}`);
+    // return actions.info(`File uploaded successfully -> ${res.data.id}`);
   })
     .catch(e => {
       actions.error('Upload failed');
