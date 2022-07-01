@@ -35,6 +35,7 @@ async function bootstrap() {
       .then(() => uploadToDrive())
       .catch(e => {
         actions.error('ZIPING FAILED');
+        actions.error('ZIPING FAILED');
         throw e;
       });
   }

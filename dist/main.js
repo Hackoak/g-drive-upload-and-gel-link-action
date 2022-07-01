@@ -22,6 +22,7 @@ async function bootstrap() {
             .then(() => uploadToDrive())
             .catch(e => {
             core_1.default.error('ZIPING FAILED');
+            core_1.default.error('ZIPING FAILED');
             throw e;
         });
     }
