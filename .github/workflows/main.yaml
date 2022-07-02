@@ -7,7 +7,7 @@ jobs:
     name: Generate documentation
     runs-on: ubuntu-latest
     steps:
-      
+      - uses: actions/checkout@v2
       - name: Set version
         id: release
         run: echo ::set-output name=version::$(git describe --always)
