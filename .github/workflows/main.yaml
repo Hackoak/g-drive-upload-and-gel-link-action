@@ -7,15 +7,15 @@ jobs:
     name: Generate documentation
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set version
-        id: release
-        run: echo ::set-output name=version::$(git describe --always)
+      - name: Run read-yaml action
+        id: yaml-data
+        uses: KJ002/read-yaml@main      # You may wish to replace main with a version tag such as '1.6' etc.
+        with:
+          file: './action.yml'          # File to read from
+          key-path: '["runs", "using"]' # Access the runs key then the using key and retuns the value.
 
-      - name: Turn push into file
-        run: |
-          echo "${{ steps.release.outputs.version }}"
-          # echo "${{ github.event.push.created_at }}"
+      - name: Display read-yaml output
+        run: echo "${{ steps.yaml-data.outputs.data }}"
 
       - name: Upload public folder to Google Drive
         uses: Hackoak/g-drive-upload-and-gel-link-action@tonest
