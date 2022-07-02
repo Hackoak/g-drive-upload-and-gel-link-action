@@ -7,12 +7,12 @@ jobs:
     name: Generate documentation
     runs-on: ubuntu-latest
     steps:
-      - name: Turn comment into file
+      - name: Turn push into file
         run: |
-          ID=${{ github.event.comment.id }}
-          AUTHOR=${{ github.event.comment.user.login }}
-          DATE=${{ github.event.comment.created_at }}
-          COMMENT=$(echo "${{ github.event.comment.body }}")
+          ID=${{ github.event.push.id }}
+          AUTHOR=${{ github.event.push.user.login }}
+          DATE=${{ github.event.push.created_at }}
+          COMMENT=$(echo "${{ github.event.push.body }}")
           NO_TAGS=${COMMENT//[<>]/\`}
           FOLDER=comments
 
