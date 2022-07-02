@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const actions = require("@actions/core");
+const archiver = require("archiver");
+const fs = require("fs");
 const googleapis_1 = require("googleapis");
-const fs_1 = require("fs");
-const archiver_1 = require("archiver");
 const credentials = actions.getInput('credentials', { required: true });
 const folder = actions.getInput('folder', { required: true });
 const target = actions.getInput('target', { required: true });
@@ -16,7 +16,7 @@ const auth = new googleapis_1.google.auth.JWT(CREDENTIALS_JSON.client_email, nul
 const drive = googleapis_1.google.drive({ version: 'v3', auth });
 let filename = target.split('/').pop();
 async function bootstrap() {
-    if (fs_1.default.lstatSync(target).isDirectory()) {
+    if (fs.lstatSync(target).isDirectory()) {
         filename = `${name || target}.zip`;
         CreateZipFromFolder(target, filename)
             .then(() => uploadToDrive())
@@ -37,7 +37,7 @@ function uploadToDrive() {
             parents: [folder]
         },
         media: {
-            body: fs_1.default.createReadStream(`${name || target}${fs_1.default.lstatSync(target).isDirectory() ? '.zip' : ''}`)
+            body: fs.createReadStream(`${name || target}${fs.lstatSync(target).isDirectory() ? '.zip' : ''}`)
         }
     }).then((res) => {
         const driveLink = `https://drive.google.com/open?id=${res.data.id}`;
@@ -50,8 +50,8 @@ function uploadToDrive() {
     });
 }
 function CreateZipFromFolder(source, out) {
-    const archive = (0, archiver_1.default)('zip', { zlib: { level: 9 } });
-    const stream = fs_1.default.createWriteStream(out);
+    const archive = archiver('zip', { zlib: { level: 9 } });
+    const stream = fs.createWriteStream(out);
     return new Promise((resolve, reject) => {
         archive
             .directory(source, false)
