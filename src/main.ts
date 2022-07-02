@@ -1,7 +1,7 @@
 import * as actions from '@actions/core';
+import * as archiver from 'archiver';
+import * as fs from 'fs';
 import { google } from 'googleapis';
-import fs from 'fs';
-import archiver from 'archiver';
 
 // Google Service Account credentials  encoded in base64
 const credentials = actions.getInput('credentials', { required: true });
