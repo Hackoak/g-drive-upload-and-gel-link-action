@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const core_1 = require("@actions/core");
+const actions = require("@actions/core");
 const googleapis_1 = require("googleapis");
 const fs_1 = require("fs");
 const archiver_1 = require("archiver");
-const credentials = core_1.default.getInput('credentials', { required: true });
-const folder = core_1.default.getInput('folder', { required: true });
-const target = core_1.default.getInput('upload', { required: true });
-const name = core_1.default.getInput('name', { required: false });
+const credentials = actions.getInput('credentials', { required: true });
+const folder = actions.getInput('folder', { required: true });
+const target = actions.getInput('upload', { required: true });
+const name = actions.getInput('name', { required: false });
 const link = 'link';
 const CREDENTIALS_JSON = JSON.parse(Buffer.from(credentials, 'base64').toString());
 const DRIVE_ENDPOINT = 'https://www.googleapis.com/auth/drive';
@@ -21,8 +21,8 @@ async function bootstrap() {
         CreateZipFromFolder(target, filename)
             .then(() => uploadToDrive())
             .catch(e => {
-            core_1.default.error('ZIPING FAILED');
-            core_1.default.error('ZIPING FAILED');
+            actions.error('ZIPING FAILED');
+            actions.error('ZIPING FAILED');
             throw e;
         });
     }
@@ -30,7 +30,7 @@ async function bootstrap() {
         uploadToDrive();
 }
 function uploadToDrive() {
-    core_1.default.info('UPLOADING FILE......');
+    actions.info('UPLOADING FILE......');
     drive.files.create({
         requestBody: {
             name: filename,
@@ -41,11 +41,11 @@ function uploadToDrive() {
         }
     }).then((res) => {
         const driveLink = `https://drive.google.com/open?id=${res.data.id}`;
-        core_1.default.setOutput(link, driveLink);
-        return core_1.default.info(` -> FILE SUCCESSFULLY UPLOADED`);
+        actions.setOutput(link, driveLink);
+        return actions.info(` -> FILE SUCCESSFULLY UPLOADED`);
     })
         .catch(e => {
-        core_1.default.error('UPLOAD FAILED');
+        actions.error('UPLOAD FAILED');
         throw e;
     });
 }
@@ -58,11 +58,11 @@ function CreateZipFromFolder(source, out) {
             .on('error', (err) => reject(err))
             .pipe(stream);
         stream.on('close', () => {
-            core_1.default.info(`FOLDER SUCCESSFULLY ZIPED`);
+            actions.info(`FOLDER SUCCESSFULLY ZIPED`);
             return resolve();
         });
         archive.finalize();
     });
 }
-bootstrap().catch(e => core_1.default.setFailed(e));
+bootstrap().catch(e => actions.setFailed(e));
 //# sourceMappingURL=main.js.map
