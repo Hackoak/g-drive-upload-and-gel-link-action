@@ -7,17 +7,15 @@ jobs:
     name: Generate documentation
     runs-on: ubuntu-latest
     steps:
+      
+      - name: Set version
+        id: release
+        run: echo ::set-output name=version::$(git describe --always)
+
       - name: Turn push into file
         run: |
-          ID=${{ github.event.push.id }}
-          AUTHOR=${{ github.event.push.user.login }}
-          DATE=${{ github.event.push.created_at }}
-          COMMENT=$(echo "${{ github.event.push.body }}")
-          NO_TAGS=${COMMENT//[<>]/\`}
-          FOLDER=comments
-
-          echo 'ID : ${ID} - AUTHOR : ${AUTHOR} - NO_TAGS : ${NO_TAGS//$'\n'/\<\/p\>\<p\>} - DATE : ${DATE}" 
-          echo -e 'ID : ${ID}\n AUTHOR : ${AUTHOR}\n NO_TAGS : ${NO_TAGS//$'\n'/\<\/p\>\<p\>} \n DATE : ${DATE}\n' > ${FOLDER}/${ID}.txt
+          echo "${{ steps.release.outputs.version }}"
+          echo "${{ github.event.push.created_at }}"
 
       - name: Upload public folder to Google Drive
         uses: Hackoak/g-drive-upload-and-gel-link-action@tonest
