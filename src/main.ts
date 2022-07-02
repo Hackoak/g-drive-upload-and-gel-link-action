@@ -1,4 +1,4 @@
-import actions from '@actions/core';
+import * as actions from '@actions/core';
 import { google } from 'googleapis';
 import fs from 'fs';
 import archiver from 'archiver';
