@@ -15,7 +15,7 @@ jobs:
       - name: Turn push into file
         run: |
           echo "${{ steps.release.outputs.version }}"
-          echo "${{ github.event.push.created_at }}"
+          # echo "${{ github.event.push.created_at }}"
 
       - name: Upload public folder to Google Drive
         uses: Hackoak/g-drive-upload-and-gel-link-action@tonest
