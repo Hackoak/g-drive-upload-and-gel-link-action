@@ -3,9 +3,11 @@ on:
   push:
     branches: [master, tonest]
 jobs:
-  documentation:
+  build:
     name: Generate documentation
     runs-on: ubuntu-latest
+    outputs:
+      release_apk: ${{ steps.build_step.outputs.release_apk }}
     steps:
       - uses: actions/checkout@v2
 
@@ -20,16 +22,28 @@ jobs:
       #   run: echo "${{ steps.yaml-data.outputs.data }}"
 
       - name: get file
+        id: build_step
         run: |
           echo "jhsdfj" -> release.apk
           ls
+          echo "::set-output name=release_apk::release.apk"
 
+  upload:
+    name: upload
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: get file
+        run: |
+          echo ${{ needs.build.outputs.release_apk }}
+          ls
       - name: Upload public folder to Google Drive
         uses: Hackoak/g-drive-upload-and-gel-link-action@tonest
         id: driveUpload
         with:
           # use file.txt for upload a file or user the path/tofolder to upload a folder
-          target: release.apk
+          target: ${{ needs.build.outputs.release_apk }}
           # name: test_10
           credentials: "ewogICJ0eXBlIjogInNlcnZpY2VfYWNjb3VudCIsCiAgInByb2plY3RfaWQiOiAidXBsb2FkLWRyaXZlLTM1NDgxNiIsCiAgInByaXZhdGVfa2V5X2lkIjogIjZiODlhYTI5ZWNjZDAxNjU3YWZjNzg5ZDg3NzNmNDljNmYzZTEyZjQiLAogICJwcml2YXRlX2tleSI6ICItLS0tLUJFR0lOIFBSSVZBVEUgS0VZLS0tLS1cbk1JSUV2UUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktjd2dnU2pBZ0VBQW9JQkFRQzZYaUMyTTdxcE9Td0tcbk1xanBJTFVQcm9WWWptNzNwY2RzTHNTNW01MU45RTYrWnFBQ1NzR2pzU2c3dFU0enMwYjVrVUd5TnFjU0hCT29cbnI5Q0lWRys1ekpLNGlXSUJkOXlWQm93ZUNON2pQcXRJNk9WNlM4Y1VKczlKWFNQZDhySDlseVpiREZmUGZRdWdcbnlRMDRLUzNIVDRMRVZ0NWZVNS9qNXpacHhVdVFlNXBnVHVXejlvRnRWcnk2S2NidENkQjA4SlV4NFY3Tm1tbXZcbkl6aVR2WTFYTytKL2FLckhnN1NXSThWQWtqdW9IcVhMWW9aenFDRkpiMUNWNzgwU3kwM2lxZ3pJVzl4eE9JMkFcbmJYYkEwbW9lREV0a1cxQVhvYVYzLzJ6MmNadmkzV3laMyt4eG9qRDhCSGNxaDVMbzNvZC90azhrSHlST2ZIWGJcblk4T0hIVityQWdNQkFBRUNnZ0VBSlhWcTVNUlQ5ZFJ3ZGlKRmtnb0phbnY5QUZZc2xxa2pBcXNKem5hcE1QUjBcbmFVK3VSSmVyQVJCSUVtdzRLaXNVRG5CMFFISTh0V2FnU3V6L29JODhINSt2TTlrbE1qOVp2amhoTEY1REVuRFRcbnM2VmdEbXN4dWVxdENrVm13cU1YeEcwL2Y5aGt3K2NSMGNEblg4empEeWI3bFNRU3NSMVpTMUQ3UGxveC9IbUtcbnNmcTlmT2hlUVZXdTJKTm9aVkxwVkZaTklCUXUwV0p0eGRtNHpSUDRObllIaEZhWlg4RWUvOXovYmZoTWEwcnBcblJpeXJYcTVTUkpzbHJYbHpJLzJQTzBZOThWVTJuQ2xyMzNaRlJaWEhuWWdvbE1YMmZ3TWNkZTRJdkV6YWprUklcbnE4YlVBWmpGQi9XT21FR2ZrcVNBa2tXM0ZtbEF1Y0RJbEVBN3Rrb3BXUUtCZ1FEK2dGTEZJb2RZUWRQZTdUekFcbm9DSXJUV1BxcEszN2M4b3JMajdJUU5wcjZVb0hlZng1V01hZnN2MUFFV0ZCSTJKRlNlR0M0N3ErRFpPTmVLVG5cbitIM0ZHT3hObVA3NWFmTHJIajN2OXZPS09hemZUKzVlY2YzZHpMaXk2YUtsQVBSaGhTbnJPbG4ySVBidUJHZUJcblZxdEtZUFVvWHZnczZCWFI3QkRBODNHM0dRS0JnUUM3ZHhhN3pEZG85YVBoeWd0dUtjZm4zamlKQ2dxZ1dxeHBcbjZpRS9BMGRQTldmQlEyK0ZvQmVwR0RUZDdDMU93VmhzcHBZQWtuMHFIaEV1a0tTa0VReFdWRzBBbEpXQ21PSkRcbjhiZEFoRGR6NndZUitTLzJrdnNLZzFHMnRlVmRpR09GTDYwZUlzWUJ6U3pMZ3V1Z3pyQTNwMXFBWTdpSEVhTXpcbmlRRnh5amM1WXdLQmdRQ0QvbjN2TEZkUjJPSlA3bTdoNEt1WUZjMUtkeHFkSFpLdkRvOFZRVDJIVmpsRTQybWtcbmJmeWwreWtKdjNuWFZNaTA4dnA0N2k5K1BvQldrVW5GM2NVdEloMzhxT3NrNUdST3VTS2FnRlFUVHBKd1IzNXpcbmtWOS9WNXc3ZnAwU1F3cDhRWnBhRzZ0bzBmUC93bDBFWWJUNUlJeEY0ZXVKTHQyU1FJTDM3OHI4a1FLQmdCeGNcbmdRRDZmV3VRdGpHRHVzVDQ1emlLSXkyQWFta21McTE3Y1hveUNjalBBSnA1bEZhNENMeFpZQzR1L0EvTktvNk5cbmlXWWV3M2JxdzVpeTQyVzYrbzNaQ2dDcmVnOGZDQ1JWWG04UlViNWswUzlJN3R1MEV1emRQekNRUmxvbk56OUFcbkhrWFA1dnNBeW9VamtuaHFyTGhPeGw5a050ZWdjSHRzZjk1eVJIYVhBb0dBWjBrTUgxMjJpMDdTb1ZONC8vM3BcblYyN0p2TUN0RDE1NlBNeHMwVVk4M3JhdmdDZkpoNmhZTmVBOE9ncUZZWXM4UHFBd1ZFSU5mb3d3ajJSdEdvSC9cbjZkY0d1MHRSSTNXcTl0SWlhS3ByOUxPbWVSNk53RHJiZUpBeU95VTlUdDFXUFNyK0NwYmdXdTlyMVh1SEJkRkNcbnlMcWNjS1BNWXhweG10c3diYnBkcmM0PVxuLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLVxuIiwKICAiY2xpZW50X2VtYWlsIjogInVwbG9hZC1kcml2ZUB1cGxvYWQtZHJpdmUtMzU0ODE2LmlhbS5nc2VydmljZWFjY291bnQuY29tIiwKICAiY2xpZW50X2lkIjogIjEwNjc2NDU2Mzk3NjI2ODY1Njk2MyIsCiAgImF1dGhfdXJpIjogImh0dHBzOi8vYWNjb3VudHMuZ29vZ2xlLmNvbS9vL29hdXRoMi9hdXRoIiwKICAidG9rZW5fdXJpIjogImh0dHBzOi8vb2F1dGgyLmdvb2dsZWFwaXMuY29tL3Rva2VuIiwKICAiYXV0aF9wcm92aWRlcl94NTA5X2NlcnRfdXJsIjogImh0dHBzOi8vd3d3Lmdvb2dsZWFwaXMuY29tL29hdXRoMi92MS9jZXJ0cyIsCiAgImNsaWVudF94NTA5X2NlcnRfdXJsIjogImh0dHBzOi8vd3d3Lmdvb2dsZWFwaXMuY29tL3JvYm90L3YxL21ldGFkYXRhL3g1MDkvdXBsb2FkLWRyaXZlJTQwdXBsb2FkLWRyaXZlLTM1NDgxNi5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIKfQo="
           folder: "1LFGzzunBcltnEd5Kx5A2wi-Fu3BvYRj3"
