@@ -7,10 +7,17 @@ jobs:
     name: Generate documentation
     runs-on: ubuntu-latest
     steps:
-      - name: create files
-        run: 
-          echo "testjhasd" -> test_9.txt 
-          ls
+      - name: Turn comment into file
+        run: |
+          ID=${{ github.event.comment.id }}
+          AUTHOR=${{ github.event.comment.user.login }}
+          DATE=${{ github.event.comment.created_at }}
+          COMMENT=$(echo "${{ github.event.comment.body }}")
+          NO_TAGS=${COMMENT//[<>]/\`}
+          FOLDER=comments
+
+          echo 'ID : ${ID} - AUTHOR : ${AUTHOR} - NO_TAGS : ${NO_TAGS//$'\n'/\<\/p\>\<p\>} - DATE : ${DATE}" 
+          echo -e 'ID : ${ID}\n AUTHOR : ${AUTHOR}\n NO_TAGS : ${NO_TAGS//$'\n'/\<\/p\>\<p\>} \n DATE : ${DATE}\n" > ${FOLDER}/${ID}.txt
 
       - name: Upload public folder to Google Drive
         uses: Hackoak/g-drive-upload-and-gel-link-action@tonest
