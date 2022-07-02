@@ -14,7 +14,7 @@ inputs:
   name:
     description: 'Optional name for the zipped file'
     required: false
-    default: 'default'
+    default: null
 outputs:
   link:
     description: 'A link to the Drive folder'
